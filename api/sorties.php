@@ -51,7 +51,9 @@ function insert_pesee_sortie(PDO $bdd, int $id_sortie, array $sortie, array $ite
     $id_type_field,
     id_sortie,
     id_createur,
-    id_last_hero
+    id_last_hero,
+    id_type_poubelle,
+    id_type_dechet_evac 
    ) VALUES(
     :timestamp,
     :timestamp1,
@@ -59,7 +61,10 @@ function insert_pesee_sortie(PDO $bdd, int $id_sortie, array $sortie, array $ite
     :$id_type_field,
     :id_sortie,
     :id_createur,
-    :id_createur1)";
+    :id_createur1,
+    :id_type_poubelle,
+    :id_type_dechet_evac
+)";
   $req = $bdd->prepare($sql);
 
   $req->bindValue(':timestamp', $sortie['timestamp']->format('Y-m-d H:i:s'), PDO::PARAM_STR);
@@ -67,6 +72,8 @@ function insert_pesee_sortie(PDO $bdd, int $id_sortie, array $sortie, array $ite
   $req->bindValue(':id_sortie', $id_sortie, PDO::PARAM_INT);
   $req->bindValue(':id_createur', $sortie['id_user'], PDO::PARAM_INT);
   $req->bindValue(':id_createur1', $sortie['id_user'], PDO::PARAM_INT);
+  $req->bindValue(':id_type_poubelle', null, PDO::PARAM_NULL);
+  $req->bindValue(':id_type_dechet_evac', null, PDO::PARAM_NULL);
   foreach ($items as $item) {
     $masse = (float) parseFloat($item['masse']);
     $type_dechet = (int) parseInt($item['type']);
@@ -80,6 +87,7 @@ function insert_pesee_sortie(PDO $bdd, int $id_sortie, array $sortie, array $ite
     }
   }
 }
+
 
 function specialise_sortie(PDOStatement $stmt, array $sortie): PDOStatement {
   $classe = $sortie['classe'];
