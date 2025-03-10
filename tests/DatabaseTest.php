@@ -1,7 +1,7 @@
 <?php 
 
 use PHPUnit\Framework\TestCase;
-use PDO;
+use PDO as PDO;
 use Dotenv\Dotenv;
 
 class DatabaseTest extends TestCase {
@@ -28,15 +28,12 @@ class DatabaseTest extends TestCase {
         
 
         $sql = file_get_contents(__DIR__ . '/../mysql/oressource.sql');
-
-        print_r($sql);
-
         $this->pdo->exec($sql);
 
     }
 
-    public function testDatabaseIsInitialized() {
-        // Vérifier si la table users existe
+    public function test_DatabaseEstInitialize() {
+
         $stmt = $this->pdo->query("SHOW TABLES LIKE 'utilisateurs'");
         $tableExists = $stmt->rowCount() > 0;
         $this->assertTrue($tableExists, "La table 'utilisateurs' n'existe pas.");

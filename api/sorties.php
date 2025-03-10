@@ -22,10 +22,10 @@
 
 global $bdd;
 
-require_once('../core/session.php');
-require_once('../core/validation.php');
-require_once('../core/requetes.php');
 
+require_once __DIR__ . '/../core/session.php';
+require_once __DIR__ . '/../core/requetes.php';
+require_once __DIR__ . '/../core/validation.php';
 /*
  * Gestion des sorties de Oressource:
  *
@@ -48,22 +48,22 @@ function insert_pesee_sortie(PDO $bdd, int $id_sortie, array $sortie, array $ite
     timestamp,
     last_hero_timestamp,
     masse,
-    $id_type_field,
+    id_type_dechet,
+    id_type_poubelle,
+    id_type_dechet_evac,
     id_sortie,
     id_createur,
-    id_last_hero,
-    id_type_poubelle,
-    id_type_dechet_evac 
+    id_last_hero
    ) VALUES(
     :timestamp,
     :timestamp1,
     :masse,
-    :$id_type_field,
+    :value_type_dechet,
+    :value_type_poubelle,
+    :value_type_dechet_evac,
     :id_sortie,
     :id_createur,
-    :id_createur1,
-    :id_type_poubelle,
-    :id_type_dechet_evac
+    :id_createur1
 )";
   $req = $bdd->prepare($sql);
 
@@ -72,14 +72,30 @@ function insert_pesee_sortie(PDO $bdd, int $id_sortie, array $sortie, array $ite
   $req->bindValue(':id_sortie', $id_sortie, PDO::PARAM_INT);
   $req->bindValue(':id_createur', $sortie['id_user'], PDO::PARAM_INT);
   $req->bindValue(':id_createur1', $sortie['id_user'], PDO::PARAM_INT);
-  $req->bindValue(':id_type_poubelle', null, PDO::PARAM_NULL);
-  $req->bindValue(':id_type_dechet_evac', null, PDO::PARAM_NULL);
   foreach ($items as $item) {
     $masse = (float) parseFloat($item['masse']);
     $type_dechet = (int) parseInt($item['type']);
     if ($masse > 0.00 && $type_dechet > 0) {
       $req->bindValue(':masse', $masse);
-      $req->bindValue(":$id_type_field", $type_dechet, PDO::PARAM_INT);
+
+      switch ($id_type_field) {
+        case 'id_type_dechet':
+          $req->bindValue(':value_type_dechet', $type_dechet, PDO::PARAM_INT);
+          $req->bindValue(':value_type_poubelle', null, PDO::PARAM_NULL);
+          $req->bindValue(':value_type_dechet_evac', null, PDO::PARAM_NULL);
+          break;
+        case 'id_type_poubelle':
+          $req->bindValue(':value_type_dechet', null, PDO::PARAM_NULL);
+          $req->bindValue(':value_type_poubelle', $type_dechet, PDO::PARAM_INT);
+          $req->bindValue(':value_type_dechet_evac', null, PDO::PARAM_NULL);
+          break;
+        case 'id_type_dechet_evac':
+          $req->bindValue(':value_type_dechet', null, PDO::PARAM_NULL);
+          $req->bindValue(':value_type_poubelle', null, PDO::PARAM_NULL);
+          $req->bindValue(':value_type_dechet_evac', $type_dechet, PDO::PARAM_INT);
+          break;
+
+      }
       $req->execute();
     } else {
       $req->closeCursor();
@@ -87,6 +103,8 @@ function insert_pesee_sortie(PDO $bdd, int $id_sortie, array $sortie, array $ite
     }
   }
 }
+
+
 
 
 function specialise_sortie(PDOStatement $stmt, array $sortie): PDOStatement {

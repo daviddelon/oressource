@@ -1,16 +1,13 @@
-<?php 
+<?php
 use PHPUnit\Framework\TestCase;
 
 use PDO as PDO;
 use Dotenv\Dotenv;
 
-if ( !isset( $_SESSION ) ) $_SESSION = array(  );
 
 class GestionTest extends TestCase {
     private $pdo;
     private $faker;
-
-    public static $shared_session = array(  ); 
 
 
     protected function setUp(): void {
@@ -46,30 +43,28 @@ class GestionTest extends TestCase {
 
         $this->faker = Faker\Factory::create('fr_FR');
 
-        $_SESSION = GestionTest::$shared_session;
 
     }
 
     protected function tearDown(): void {
        // $this->pdo->rollBack();
 
-       GestionTest::$shared_session = $_SESSION;
     }
 
     public function test_PointDeVenteCreate() {
 
-        $data=array(
+        $data=[
             'nom'=>$this->faker->company(),
             'adresse'=>$this->faker->address(),
-            'surface_vente'=>$this->faker->randomNumber(3, false),
+            'surface_vente'=>$this->faker->numberBetween(1, 1000),
             'description'=>$this->faker->sentence(),
             'couleur'=>$this->faker->hexColor(),
             'createur'=>'1'
-        );
+        ];
 
         generic_insert_5Config($this->pdo, 'points_vente', 'nom', 'adresse', 'surface_vente', $data);
 
-    
+
         $stmt = $this->pdo->query("SELECT * FROM points_vente WHERE nom ='".$data['nom']."'");
         $pointdevente = $stmt->fetch();
         $this->assertNotFalse($pointdevente);
@@ -78,65 +73,89 @@ class GestionTest extends TestCase {
      
     public function test_PointDeCollecteCreate() {
 
-        $data=array(
+        $data=[
             'nom'=>$this->faker->company(),
             'adresse'=>$this->faker->address(),
-            'pesee_max'=>$this->faker->randomNumber(3, false),
+            'pesee_max'=>$this->faker->numberBetween(1, 500),
             'description'=>$this->faker->sentence(),
             'couleur'=>$this->faker->hexColor(),
             'createur'=>'1'
-        );
+        ];
 
         generic_insert_5Config($this->pdo, 'points_collecte', 'nom', 'adresse', 'pesee_max', $data);
        
     
         $stmt = $this->pdo->query("SELECT * FROM points_collecte WHERE nom ='".$data['nom']."'");
-        $pointdecollecte = $stmt->fetch();
-        $this->assertNotFalse($pointdecollecte);
-        $this->assertEquals($data['nom'], $pointdecollecte['nom']);
+        $fetch = $stmt->fetch();
+        $this->assertNotFalse($fetch);
+        $this->assertEquals($data['nom'], $fetch['nom']);
     }
      
 
     public function test_PointDeSortieCreate() {
 
-        $data=array(
+        $data=[
             'nom'=>$this->faker->company(),
             'adresse'=>$this->faker->address(),
-            'pesee_max'=>$this->faker->randomNumber(3, false),
+            'pesee_max'=>$this->faker->numberBetween(1, 500),
             'description'=>$this->faker->sentence(),
             'couleur'=>$this->faker->hexColor(),
             'createur'=>'1'
-        );
+        ];
 
         generic_insert_5Config($this->pdo, 'points_sortie', 'nom', 'adresse', 'pesee_max', $data);
 
 
-    
+
         $stmt = $this->pdo->query("SELECT * FROM points_sortie WHERE nom ='".$data['nom']."'");
-        $pointdesortie = $stmt->fetch();
-        $this->assertNotFalse($pointdesortie);
-        $this->assertEquals($data['nom'], $pointdesortie['nom']);
+        $fetch = $stmt->fetch();
+        $this->assertNotFalse($fetch);
+        $this->assertEquals($data['nom'], $fetch['nom']);
     }
      
 
-    public function test_TypeObjetsCollectes() {
+    public function test_TypeObjetsCollectesCreate() {
 
-        $data = array(
+        $data = [
             'nom'=>$this->faker->word(),
             'description'=>$this->faker->sentence(),
             'couleur'=>$this->faker->hexColor(),
             'createur'=>'1'
 
-          );
+        ];
 
 
         generic_insert_config($this->pdo, 'type_dechets', $data);
     
         $stmt = $this->pdo->query("SELECT * FROM type_dechets WHERE nom ='". $data['nom']."'");
-        $typedechets = $stmt->fetch();
-        $this->assertNotFalse(condition: $typedechets);
-        $this->assertEquals( $data['nom'], $typedechets['nom']);
+        $fetch = $stmt->fetch();
+        $this->assertNotFalse(condition: $fetch);
+        $this->assertEquals( $data['nom'], $fetch['nom']);
     }
+
+
+         
+
+    public function test_TypeObjetsEvacueesCreate() {
+
+        $data = [
+            'nom'=>$this->faker->word(),
+            'description'=>$this->faker->sentence(),
+            'couleur'=>$this->faker->hexColor(),
+            'createur'=>'1'
+
+        ];
+
+
+        generic_insert_config($this->pdo, 'type_dechets_evac', $data);
+    
+        $stmt = $this->pdo->query("SELECT * FROM type_dechets_evac WHERE nom ='". $data['nom']."'");
+        $fetch = $stmt->fetch();
+        $this->assertNotFalse(condition: $fetch);
+        $this->assertEquals( $data['nom'], $fetch['nom']);
+    }
+     
+    
      
     
 

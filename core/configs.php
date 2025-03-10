@@ -93,16 +93,15 @@ function generic_insert_5Config(PDO $bdd, string $table, string $str0, string $s
 
 function generic_ctor_post(): array {
   global $_SESSION;
-  $a = array(
+  return [
     'nom' => filter_input(INPUT_POST, 'nom', FILTER_SANITIZE_STRING | FILTER_FLAG_STRIP_BACKTICK),
     'description' => filter_input(INPUT_POST, 'commentaire', FILTER_SANITIZE_STRING | FILTER_FLAG_STRIP_BACKTICK),
     'couleur' => filter_input(INPUT_POST, 'couleur', FILTER_VALIDATE_REGEXP, ['options' => ['regexp' => '/(^#[0-9A-Fa-f]{6})/']]),
     // La regex capture SEULEMENT les couleurs en HEXA.
     'createur' => $_SESSION['id'],
-  );
-  print_r($a);
-  return $a;
+  ];
 }
+
 
 function conventions_sortiePost(PDO $bdd) {
   if (is_allowed_partners()) {
