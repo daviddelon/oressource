@@ -66,9 +66,9 @@ class GestionTest extends TestCase {
 
 
         $stmt = $this->pdo->query("SELECT * FROM points_vente WHERE nom ='".$data['nom']."'");
-        $pointdevente = $stmt->fetch();
-        $this->assertNotFalse($pointdevente);
-        $this->assertEquals($data['nom'], $pointdevente['nom']);
+        $fetch = $stmt->fetch();
+        $this->assertNotFalse($fetch);
+        
     }
      
     public function test_PointDeCollecteCreate() {
@@ -88,7 +88,7 @@ class GestionTest extends TestCase {
         $stmt = $this->pdo->query("SELECT * FROM points_collecte WHERE nom ='".$data['nom']."'");
         $fetch = $stmt->fetch();
         $this->assertNotFalse($fetch);
-        $this->assertEquals($data['nom'], $fetch['nom']);
+        
     }
      
 
@@ -110,27 +110,39 @@ class GestionTest extends TestCase {
         $stmt = $this->pdo->query("SELECT * FROM points_sortie WHERE nom ='".$data['nom']."'");
         $fetch = $stmt->fetch();
         $this->assertNotFalse($fetch);
-        $this->assertEquals($data['nom'], $fetch['nom']);
+  
     }
      
 
     public function test_TypeObjetsCollectesCreate() {
 
-        $data = [
-            'nom'=>$this->faker->word(),
-            'description'=>$this->faker->sentence(),
-            'couleur'=>$this->faker->hexColor(),
-            'createur'=>'1'
+        $datas = [
+            [
+                'nom'=>$this->faker->word(),
+                'description'=>$this->faker->sentence(),
+                'couleur'=>$this->faker->hexColor(),
+                'createur'=>'1'
 
+            ],
+            [
+                'nom'=>$this->faker->word(),
+                'description'=>$this->faker->sentence(),
+                'couleur'=>$this->faker->hexColor(),
+                'createur'=>'1'
+
+            ]
         ];
 
 
-        generic_insert_config($this->pdo, 'type_dechets', $data);
-    
-        $stmt = $this->pdo->query("SELECT * FROM type_dechets WHERE nom ='". $data['nom']."'");
-        $fetch = $stmt->fetch();
-        $this->assertNotFalse(condition: $fetch);
-        $this->assertEquals( $data['nom'], $fetch['nom']);
+        foreach ($datas as $data) {
+
+            generic_insert_config($this->pdo, 'type_dechets', $data);
+        
+            $stmt = $this->pdo->query("SELECT * FROM type_dechets WHERE nom ='". $data['nom']."'");
+            $fetch = $stmt->fetch();
+            $this->assertNotFalse(condition: $fetch);
+           
+        }
     }
 
 
@@ -138,25 +150,72 @@ class GestionTest extends TestCase {
 
     public function test_TypeObjetsEvacueesCreate() {
 
-        $data = [
+        $datas = [
+            [
+                'nom'=>$this->faker->word(),
+                'description'=>$this->faker->sentence(),
+                'couleur'=>$this->faker->hexColor(),
+                'createur'=>'1'
+
+            ],
+            [
+                'nom'=>$this->faker->word(),
+                'description'=>$this->faker->sentence(),
+                'couleur'=>$this->faker->hexColor(),
+                'createur'=>'1'
+
+            ]
+        ];
+
+
+        foreach ($datas as $data) {
+            generic_insert_config($this->pdo, 'type_dechets_evac', $data);
+        
+            $stmt = $this->pdo->query("SELECT * FROM type_dechets_evac WHERE nom ='". $data['nom']."'");
+            $fetch = $stmt->fetch();
+            $this->assertNotFalse(condition: $fetch);
+            $this->assertEquals( $data['nom'], $fetch['nom']);
+        }
+    }
+     
+
+    public function test_TypePoubellesCreate() {
+
+    // Pas d'API pour les types de poubelles, insert simple 
+
+
+
+    $data=[
+        'ultime'=>1,
+        'nom'=>$this->faker->word(),
+        'description'=>$this->faker->sentence(),
+        'masse_bac'=>$this->faker->numberBetween(1, 500),
+        'couleur'=>$this->faker->hexColor(),
+        'createur'=>'1'
+    ];
+
+    
+    $stmt = $this->pdo->prepare('INSERT INTO types_poubelles (nom, couleur, description, masse_bac, ultime, id_createur, id_last_hero) VALUES (?, ?, ?,  ?, ?, ?, ?)');
+
+    $stmt->execute([$data['nom'], $data['couleur'], $data['description'], $data['masse_bac'], $data['ultime'], $data['createur'],$data['createur'] ]);
+    $stmt->closeCursor();
+    
+     
+    }
+
+
+    public function test_ConventionsAvecPartenairesCreate() {
+
+        $data=[
             'nom'=>$this->faker->word(),
             'description'=>$this->faker->sentence(),
             'couleur'=>$this->faker->hexColor(),
             'createur'=>'1'
-
         ];
 
+        generic_insert_config($this->pdo, 'conventions_sorties', $data);
 
-        generic_insert_config($this->pdo, 'type_dechets_evac', $data);
-    
-        $stmt = $this->pdo->query("SELECT * FROM type_dechets_evac WHERE nom ='". $data['nom']."'");
-        $fetch = $stmt->fetch();
-        $this->assertNotFalse(condition: $fetch);
-        $this->assertEquals( $data['nom'], $fetch['nom']);
+
+
     }
-     
-    
-     
-    
-
 }

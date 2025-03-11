@@ -56,6 +56,7 @@ class MouvementsTest extends TestCase {
     }
 
     protected function tearDown(): void {
+        session_abort(); // pour eviter des warnings sur session_start()
        // $this->pdo->rollBack();
     }
 
@@ -64,7 +65,10 @@ class MouvementsTest extends TestCase {
     public function test_VenteAvecPeseeCreate() {
 
 
+        ob_start(); // pour eviter affichage d'erreur a l'inclusion
         require_once  'ventes.php';
+        ob_end_clean();
+
 
         // Le name ne semble pas etre stocke, requete inutile
         $stmt = $this->pdo->query("SELECT * FROM type_dechets WHERE id = 1");
@@ -88,7 +92,7 @@ class MouvementsTest extends TestCase {
                     'name' => $typedechets['nom']
                 ],
                 [
-                    'id_type' => 1,
+                    'id_type' => 2,
                     'id_objet' => null,
                     'lot' => false,
                     'quantite' => $this->faker->numberBetween(1, 10),
@@ -112,17 +116,13 @@ class MouvementsTest extends TestCase {
         $stmt = $this->pdo->query("SELECT * FROM ventes WHERE commentaire ='".$data['commentaire']."'");
         $fetch = $stmt->fetch();
         $this->assertNotFalse($fetch);
-        $this->assertEquals($data['commentaire'], $fetch['commentaire']);
 
 
         $stmt = $this->pdo->query("SELECT * FROM vendus WHERE id_vente ='".$vente_id."'");
-        $fetchall = $stmt->fetchAll();
 
-        $this->assertNotFalse($fetchall);
-        
-        foreach ($fetchall as $fetch) {
-            $this->assertEquals($vente_id, $fetch['id_vente']);
-        }
+        $count = $stmt->rowCount();
+        $this->assertEquals(2, $count);
+    
         
 
         $ids = [];
@@ -133,14 +133,8 @@ class MouvementsTest extends TestCase {
         
         $stmt = $this->pdo->query("SELECT * FROM pesees_vendus WHERE id in (".$queryIds.")");
         
-        $fetchall = $stmt->fetchAll();
-
-        $this->assertNotFalse($fetchall);
-        $i=0;
-        foreach ($fetchall as $fetch) {
-            $this->assertEquals($vendu_ids[$i], $fetch['id']);
-            $i++;
-        }
+        $count = $stmt->rowCount();
+        $this->assertEquals(2, $count);
         
 
 
@@ -150,35 +144,50 @@ class MouvementsTest extends TestCase {
     public function test_SortieDechetterieCreate() {
 
 
-    require_once  'sorties.php';
+        ob_start(); // pour eviter affichage d'erreur a l'inclusion
+        require_once  'sorties.php';
+        ob_end_clean();
 
-    $data = [
-        'timestamp' => new DateTime('now'),
-        'type_sortie' => null, // id_type_action
-        'localite' => null, 
-        'classe' => 'sortiesd',
-        'id_point_sortie' => 1,
-        'commentaire' => $this->faker->sentence(),
-        'id_user' => 1,
-        'evacs' => [
-          [
-            'masse' => $this->faker->numberBetween(1, 25),
-            'type' => 1
-          ]
-        ]
-        ];
+        $data = [
+            'timestamp' => new DateTime('now'),
+            'type_sortie' => null, // id_type_action
+            'localite' => null,
+            'classe' => 'sortiesd',
+            'id_point_sortie' => 1,
+            'commentaire' => $this->faker->sentence(),
+            'id_user' => 1,
+            'evacs' => [
+                [
+                'masse' => $this->faker->numberBetween(1, 25),
+                'type' => 1
+                ],
+                [
+                'masse' => $this->faker->numberBetween(1, 25),
+                'type' => 2
+                ]
+            ]
+            ];
 
 
 
-    $id_sortie = (int) insert_sortie($this->pdo, $data);
+        $id_sortie = (int) insert_sortie($this->pdo, $data);
 
-    insert_pesee_sortie($this->pdo, $id_sortie, $data, $data['evacs'], 'id_type_dechet_evac');
+        insert_pesee_sortie($this->pdo, $id_sortie, $data, $data['evacs'], 'id_type_dechet_evac');
 
 
-    $stmt = $this->pdo->query("SELECT * FROM sorties WHERE commentaire ='".$data['commentaire']."'");
-    $fetch = $stmt->fetch();
-    $this->assertNotFalse($fetch);
-    $this->assertEquals($data['commentaire'], $fetch['commentaire']);
+        $stmt = $this->pdo->query("SELECT * FROM sorties WHERE commentaire ='".$data['commentaire']."'");
+        $fetch = $stmt->fetch();
+        $this->assertNotFalse($fetch);
+
+
+        $stmt = $this->pdo->query("SELECT * FROM pesees_sorties WHERE id_sortie ='".$id_sortie."'"."AND id_type_dechet_evac='".$data['evacs'][0]['type']."'" );
+        $fetch = $stmt->fetch();
+        $this->assertNotFalse($fetch);
+
+        $stmt = $this->pdo->query("SELECT * FROM pesees_sorties WHERE id_sortie ='".$id_sortie."'"."AND id_type_dechet_evac='".$data['evacs'][1]['type']."'" );
+        $fetch = $stmt->fetch();
+        $this->assertNotFalse($fetch);
+
 
     }
     

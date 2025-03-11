@@ -27,11 +27,11 @@ require_once '../core/composants.php';
 function sortie_type(string $type): string {
   switch ($type) {
     case 'sortiesc';
-      return 'don aux partenaires';
+      return 'Sorties partenaires';
     case 'sorties';
       return 'don';
     case 'sortiesd';
-      return 'dechetterie';
+      return 'Dechetterie';
     case 'sortiesp';
       return 'poubelles';
     case 'sortiesr';
@@ -309,7 +309,7 @@ if (is_valid_session() && is_allowed_bilan()) {
         </div>
         <div class="panel-body">
           <?= count($data['donsSimples']) ? bilanTable3(['id' => 0, 'text' => 'Dons simples', 'td0' => 'type objet', 'td1' => 'somme', 'td2' => '%', 'masse' => $data['masse'], 'data' => $data['donsSimples']]) : '' ?>
-          <?= count($data['partenaires']) ? bilanTable3(['id' => 1, 'text' => 'Dons aux partenaires', 'td0' => 'type objet', 'td1' => 'somme', 'td2' => '%', 'masse' => $data['masse'], 'data' => $data['partenaires']]) : '' ?>
+          <?= count($data['partenaires']) ? bilanTable3(['id' => 1, 'text' => 'Sorties partenaires', 'td0' => 'type objet', 'td1' => 'somme', 'td2' => '%', 'masse' => $data['masse'], 'data' => $data['partenaires']]) : '' ?>
           <?= count($data['dechetteries']) ? bilanTable3(['id' => 2, 'text' => 'Dechetterie', 'td0' => 'type objet', 'td1' => 'somme', 'td2' => '%', 'masse' => $data['masse'], 'data' => $data['dechetteries']]) : '' ?>
           <?= count($data['poubelles']) ? bilanTable3(['id' => 3, 'text' => 'Poubelles', 'td0' => 'type objet', 'td1' => 'somme', 'td2' => '%', 'masse' => $data['masse'], 'data' => $data['poubelles']]) : '' ?>
           <?= count($data['recycleurs']) ? bilanTable3(['id' => 4, 'text' => 'Recycleurs', 'td0' => 'type objet', 'td1' => 'somme', 'td2' => '%', 'masse' => $data['masse'], 'data' => $data['recycleurs']]) : '' ?>
@@ -334,7 +334,7 @@ if (is_valid_session() && is_allowed_bilan()) {
 
           <table class="table table-condensed table-striped table table-bordered table-hover" style="border-collapse:collapse;">
             <thead>
-            <th style="width:300px">Dons aux partenaires</th>
+            <th style="width:300px">Sorties partenaires</th>
             <tr>
               <th style="width:300px">Nom du partenaire</th>
               <th>Nbr. de sorties</th>

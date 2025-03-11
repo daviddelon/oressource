@@ -11,3 +11,4 @@ moteur/dbconfig\.php\.example
 node_modules/
 vendor
 .env.test
+deploy.php
