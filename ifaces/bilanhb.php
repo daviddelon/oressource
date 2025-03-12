@@ -29,7 +29,7 @@ function sortie_type(string $type): string {
     case 'sortiesc';
       return 'Sorties partenaires';
     case 'sorties';
-      return 'don';
+      return 'Don';
     case 'sortiesd';
       return 'Dechetterie';
     case 'sortiesp';
