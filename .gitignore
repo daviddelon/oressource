@@ -12,3 +12,9 @@ node_modules/
 vendor
 .env.test
 deploy.php
+
+# Playwright
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/
