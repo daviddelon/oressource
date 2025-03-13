@@ -3,6 +3,7 @@ use PHPUnit\Framework\TestCase;
 
 use PDO as PDO;
 use Dotenv\Dotenv;
+use PlaywrightPhp\Playwright;
 
 
 class MouvementsTest extends TestCase {
@@ -190,6 +191,26 @@ class MouvementsTest extends TestCase {
 
 
     }
+
+    public function  test_VenteAvecPeseeUICreate()
+    {
+        $playwright = new Playwright(['browser' => 'chromium', 'log_browser_console' => true]);
+
+        $browser = $playwright->launch(); 
+        $page = $browser->newPage(); 
+
+        $page->goto('http://localhost:3000/ifaces/login.html');
+        $page->getByRole('textbox', [ 'name'=> 'Mail :' ])->fill('admin@oressource.org');
+        $page->getByRole('textbox', [ 'name'=> 'Mot de passe :=' ])->fill('admin');
+        $page->getByRole('textbox', [ 'name'=> 'Mot de passe :=' ])->press('Enter');
+        $page->getByRole('link', [ 'name'=> 'Points de vente' ])->first()->click();
+        $page->locator('[href*="../ifaces/ventes.php?numero=1"]')->click();
+        $page->getByRole('button', [ 'name'=> 'eius' ])->click();
+        $page->getByRole('textbox', [ 'name'=> 'Prix unitaire:' ])->fill('99');
+        $page->getByRole('textbox', [ 'name'=> 'Masse unitaire:' ])->fill('77');
+        $page->getByRole('button', [ 'name'=> 'Ajouter' ])->click();
+        $page->getByRole('button', [ 'name'=> 'Encaisser' ])->click();
+    } 
     
 
 }
