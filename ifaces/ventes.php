@@ -30,7 +30,7 @@ if (is_valid_session() && is_allowed_vente_id($numero)) {
   // on détermine la référence de la prochaine vente.
   $req = $bdd->prepare('SELECT max(id) id FROM ventes WHERE id_point_vente = :id');
   $req->execute(['id' => $numero]);
-  $numero_vente = $req->fetch()['id'];
+  $numero_vente = $req->fetch()['id']+1;
   $req->closeCursor();
 
   $point_vente = points_ventes_id($bdd, $numero);

@@ -116,23 +116,50 @@ class GestionTest extends TestCase {
 
     public function test_TypeObjetsCollectesCreate() {
 
-        $datas = [
-            [
-                'nom'=>$this->faker->word(),
-                'description'=>$this->faker->sentence(),
-                'couleur'=>$this->faker->hexColor(),
-                'createur'=>'1'
 
-            ],
-            [
-                'nom'=>$this->faker->word(),
-                'description'=>$this->faker->sentence(),
-                'couleur'=>$this->faker->hexColor(),
-                'createur'=>'1'
 
-            ]
-        ];
+        $stmt = $this->pdo->query("SELECT * FROM type_dechets WHERE nom ='D3E'");
+        $fetch = $stmt->fetch();
 
+        if ($fetch) {
+
+            $datas = [
+                [
+                    'nom'=>$this->faker->word(),
+                    'description'=>$this->faker->sentence(),
+                    'couleur'=>$this->faker->hexColor(),
+                    'createur'=>'1'
+
+                ],
+                [
+                    'nom'=>$this->faker->word(),
+                    'description'=>$this->faker->sentence(),
+                    'couleur'=>$this->faker->hexColor(),
+                    'createur'=>'1'
+
+                ]
+            ];
+        }   
+        
+        else {
+            $datas = [
+                [
+                    'nom'=>'D3E',
+                    'description'=>$this->faker->sentence(),
+                    'couleur'=>$this->faker->hexColor(),
+                    'createur'=>'1'
+
+                ],
+                [
+                    'nom'=>$this->faker->word(),
+                    'description'=>$this->faker->sentence(),
+                    'couleur'=>$this->faker->hexColor(),
+                    'createur'=>'1'
+
+                ]
+            ];
+
+        }
 
         foreach ($datas as $data) {
 
