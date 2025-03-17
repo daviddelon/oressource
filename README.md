@@ -9,7 +9,7 @@ Les modifications concernent principalement des corrections de bugs afin de le r
 
 Le dépôt Oressouce originel se trouve ici : https://github.com/mart1ver/oressource 
 
-Merci aux auteurs de ce projet, qui plus de 5 ans après sa fin annoncé, semlbe encore utilisé dans quelques ressourceries.
+Merci aux auteurs de ce projet, qui plus de 5 ans après l'annonce de la fin de son évolution, est encore utilisé dans quelques ressourceries.
 
 David.
 
