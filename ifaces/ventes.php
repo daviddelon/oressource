@@ -46,6 +46,8 @@ if (is_valid_session() && is_allowed_vente_id($numero)) {
       </div>
     </nav>
 
+    <div class="col-md-4"></div>
+    <div id="message" class="col-md-8">&nbsp;</div>
     <div class="col-md-4">
       <div id="ticket" class="panel panel-info" >
         <div class="panel-heading">

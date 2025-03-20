@@ -19,3 +19,5 @@ deploy.php
 /blob-report/
 /playwright/.cache/
 /e2e
+TODO.txt
+tests/.phpunit.result.cache
