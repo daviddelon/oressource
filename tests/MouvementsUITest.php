@@ -6,7 +6,7 @@ use Dotenv\Dotenv;
 use PlaywrightPhp\Playwright;
 
 
-// Test de l'interface entree et sortie d'objets 
+// Test de l'interface entree et sortie d'objets, test de partie de code non encapsule dans des fonctions
 
 class MouvementsUITest extends TestCase {
     private $pdo;
@@ -60,12 +60,12 @@ class MouvementsUITest extends TestCase {
         $page = $browser->newPage(); 
 
         $commentaire=$this->faker->sentence();
-        $page->goto($_ENV['URL']);
+        $page->goto($_ENV['URL'].'/ifaces/login.html');
         $page->getByRole('textbox', [ 'name'=> 'Mail :' ])->fill($_ENV['ADMIN_MAIL']);
         $page->getByRole('textbox', [ 'name'=> 'Mot de passe :=' ])->fill($_ENV['ADMIN_PASS']);
         $page->getByRole('textbox', [ 'name'=> 'Mot de passe :=' ])->press('Enter');
         $page->getByRole('link', [ 'name'=> 'Points de vente' ])->first()->click();
-        $page->locator('[href*="../ifaces/ventes.php?numero=1"]')->click();
+        $page->locator('[href="../ifaces/ventes.php?numero=1"]')->click();
         $page->getByRole('button', [ 'name'=> 'D3E' ])->click();
         $page->getByRole('textbox', [ 'name'=> 'Prix unitaire:' ])->fill( (string) $this->faker->randomDigitNotNull());
         $page->getByRole('textbox', [ 'name'=> 'Masse unitaire:' ])->fill((string) $this->faker->randomDigitNotNull());
@@ -73,11 +73,12 @@ class MouvementsUITest extends TestCase {
         $page->getByRole('button', [ 'name'=> 'Ajouter' ])->click();
         $page->getByRole('button', [ 'name'=> 'Encaisser' ])->click();
 
-
-        // Attendre que la base se mette à jour
         sleep(1);
       
         $stmt = $this->pdo->query("SELECT * FROM ventes WHERE commentaire ='".$commentaire."'");
+
+
+
         $fetch = $stmt->fetch();
         $this->assertNotFalse($fetch);
 
@@ -98,6 +99,70 @@ class MouvementsUITest extends TestCase {
 
     } 
 
+    // Modification de la masse d'un objet
+    public function  test_Modification_verification_objet()
+    {
+        $playwright = new Playwright(['browser' => 'chromium']);
+
+        $browser = $playwright->launch(); 
+        $page = $browser->newPage(); 
+
+        $commentaire=$this->faker->sentence();
+        $page->goto($_ENV['URL'].'/ifaces/login.html');
+        $page->getByRole('textbox', [ 'name'=> 'Mail :' ])->fill($_ENV['ADMIN_MAIL']);
+        $page->getByRole('textbox', [ 'name'=> 'Mot de passe :=' ])->fill($_ENV['ADMIN_PASS']);
+        $page->getByRole('textbox', [ 'name'=> 'Mot de passe :=' ])->press('Enter');
+        sleep(1);
+
+        $page->goto($_ENV['URL'].'/ifaces/verif_vente.php?date1=01-01-2025&date2='.date("d-m-Y").'&numero=1');
+
+        sleep(1);
+
+
+        $page->locator('[action="modification_verification_vente.php?nvente=1"]')->click();
+        
+
+        sleep(1);
+
+        $page->locator('[action="modification_verification_objet.php"]')->first()->click();
+
+
+        sleep(1);
+
+        // On modifie la valeur d'origine
+
+        $page->locator('#masse')->fill("2.88");
+        $page->locator('#masse')->press('Enter');
+
+        sleep(1);
+
+        $stmt = $this->pdo->query("SELECT * FROM pesees_vendus WHERE id = '1' and masse= '2.88'");
+        $fetch = $stmt->fetch();
+        $this->assertNotFalse($fetch);
+
+
+
+        $page->locator('[action="modification_verification_vente.php?nvente=1"]')->click();
+
+        sleep(1);
+
+        $page->locator('[action="modification_verification_objet.php"]')->first()->click();
+
+
+        sleep(1);
+
+
+        // On retabli la valeur d'origine
+
+        $page->locator('#masse')->fill("2.77");
+        $page->locator('#masse')->press('Enter');
+
+        
+        sleep(1);
+
+        
+
+    } 
 
     
 
