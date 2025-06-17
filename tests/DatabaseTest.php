@@ -4,6 +4,8 @@ use PHPUnit\Framework\TestCase;
 use PDO as PDO;
 use Dotenv\Dotenv;
 
+// Test initialisation de la base de donnéees depuis le fichier oressource.sql fourni avec l'application
+
 class DatabaseTest extends TestCase {
     private $pdo;
 

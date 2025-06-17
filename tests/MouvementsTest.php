@@ -4,7 +4,10 @@ use PHPUnit\Framework\TestCase;
 use PDO as PDO;
 use Dotenv\Dotenv;
 use PlaywrightPhp\Playwright;
+use function PHPUnit\Framework\assertTrue;
 
+
+// Test des fonctions entree et sortie d'objets 
 
 class MouvementsTest extends TestCase {
     private $pdo;
@@ -70,6 +73,12 @@ class MouvementsTest extends TestCase {
         $stmt = $this->pdo->query("SELECT * FROM type_dechets WHERE id = 1");
         $typedechets = $stmt->fetch();
 
+
+        // Contenu fixe pour la premiere vente, afin d'alimenter les tests suivants, sinon generation via faker()
+        $stmt = $this->pdo->query("SELECT id FROM ventes");
+        $count = $stmt->rowCount();
+
+
         $data=[
             'classe'=>'ventes',
             'id_point'=>1,
@@ -84,7 +93,7 @@ class MouvementsTest extends TestCase {
                     'lot' => false,
                     'quantite' => $this->faker->numberBetween(1, 10),
                     'prix' => $this->faker->numberBetween(1, 20),
-                    'masse' =>  $this->faker->numberBetween(1, 5),
+                    'masse' =>  ($count==0) ? (2.77) : ($this->faker->numberBetween(1, 5)),
                     'name' => $typedechets['nom']
                 ],
                 [
@@ -93,7 +102,7 @@ class MouvementsTest extends TestCase {
                     'lot' => false,
                     'quantite' => $this->faker->numberBetween(1, 10),
                     'prix' => $this->faker->numberBetween(1, 20),
-                    'masse' =>  $this->faker->numberBetween(1, 5),
+                    'masse' =>  ($count==0) ? (3.77) : ($this->faker->numberBetween(1, 5)),
                     'name' => $typedechets['nom']
                 ],
             ]
@@ -187,5 +196,14 @@ class MouvementsTest extends TestCase {
 
     }
 
+    // Test fonction vendu_by_id_vente suite à correction bug
+
+    public function test_MasseVenduByIdVente() {
+
+        // Utilise les donnéess de la première ventre créee 
+        $vendus_by_id_vente= vendu_by_id_vente($this->pdo, 1);
+        // Le deuxieme objet vendu doit afficher 3.77 en masse au lieu de 2.77 avant correction du bug
+        assertTrue($vendus_by_id_vente[1]['masse']==3.77);
+    }
 
 }

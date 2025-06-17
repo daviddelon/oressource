@@ -6,6 +6,8 @@ use Dotenv\Dotenv;
 use PlaywrightPhp\Playwright;
 
 
+// Test de l'interface entree et sortie d'objets 
+
 class MouvementsUITest extends TestCase {
     private $pdo;
     private $faker;

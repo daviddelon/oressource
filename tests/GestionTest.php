@@ -5,6 +5,9 @@ use PDO as PDO;
 use Dotenv\Dotenv;
 
 
+// Tests des fonctions appellées dans le menu Gestion
+// Ces tests permettent également d'initialier la base de donnée avec le minimum necessaire pour ensuite enregistrer une vente
+
 class GestionTest extends TestCase {
     private $pdo;
     private $faker;
