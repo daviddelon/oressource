@@ -100,7 +100,7 @@ class MouvementsUITest extends TestCase {
     } 
 
     // Modification de la masse d'un objet
-    public function  test_Modification_verification_objet()
+    public function  test_Modification_masse_objet_vendu()
     {
         $playwright = new Playwright(['browser' => 'chromium']);
 
@@ -160,6 +160,56 @@ class MouvementsUITest extends TestCase {
         
         sleep(1);
 
+        
+
+    } 
+
+    public function  test_Modification_masse_objet_sorti()
+    {
+        $playwright = new Playwright(['browser' => 'chromium']);
+
+        $browser = $playwright->launch(); 
+        $page = $browser->newPage(); 
+
+        $commentaire=$this->faker->sentence();
+        $page->goto($_ENV['URL'].'/ifaces/login.html');
+        $page->getByRole('textbox', [ 'name'=> 'Mail :' ])->fill($_ENV['ADMIN_MAIL']);
+        $page->getByRole('textbox', [ 'name'=> 'Mot de passe :=' ])->fill($_ENV['ADMIN_PASS']);
+        $page->getByRole('textbox', [ 'name'=> 'Mot de passe :=' ])->press('Enter');
+        sleep(1);
+
+        $page->goto($_ENV['URL'].'/ifaces/verif_sorties.php?date1=01-01-2025&date2='.date("d-m-Y").'&numero=1');
+
+        sleep(1);
+
+
+        $page->locator('[href="../ifaces/modification_verif_sorties.php?id=1"]')->click();
+        
+
+        sleep(1);
+
+        $page->locator('[href="../ifaces/modification_verification_pesee_sorties.php?id=1"]')->click();
+
+
+        sleep(1);
+
+        // On modifie la valeur d'origine
+
+        $masse=$this->faker->numberBetween(1, 25);
+
+        echo $masse;
+        
+
+        $page->locator('#masse')->fill(strval($masse));
+        $page->locator('#masse')->press('Enter');
+
+        sleep(1);
+
+        $stmt = $this->pdo->query("SELECT * FROM pesees_sorties WHERE id = '1' and masse='$masse'");
+        $fetch = $stmt->fetch();
+        $this->assertNotFalse($fetch);
+
+    
         
 
     } 
