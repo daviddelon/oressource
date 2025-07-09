@@ -75,8 +75,11 @@ class MouvementsTest extends TestCase {
 
 
         // Contenu fixe pour la premiere vente, afin d'alimenter les tests suivants, sinon generation via faker()
-        $stmt = $this->pdo->query("SELECT id FROM ventes");
-        $count = $stmt->rowCount();
+        $stmt = $this->pdo->query("SELECT COUNT(*) FROM ventes");
+
+        $stmt->execute();
+
+        $count = $stmt->fetchColumn();
 
 
         $data=[
@@ -123,9 +126,11 @@ class MouvementsTest extends TestCase {
         $this->assertNotFalse($fetch);
 
 
-        $stmt = $this->pdo->query("SELECT * FROM vendus WHERE id_vente ='".$vente_id."'");
+        $stmt = $this->pdo->query("SELECT COUNT(*) FROM vendus WHERE id_vente ='".$vente_id."'");
+        $stmt->execute();
 
-        $count = $stmt->rowCount();
+        $count = $stmt->fetchColumn();
+
         $this->assertEquals(2, $count);
     
         
@@ -136,9 +141,11 @@ class MouvementsTest extends TestCase {
         }
         $queryIds = implode(',', $ids);
         
-        $stmt = $this->pdo->query("SELECT * FROM pesees_vendus WHERE id in (".$queryIds.")");
+        $stmt = $this->pdo->query("SELECT COUNT(*) FROM pesees_vendus WHERE id in (".$queryIds.")");
+
+        $stmt->execute();
+        $count = $stmt->fetchColumn();
         
-        $count = $stmt->rowCount();
         $this->assertEquals(2, $count);
         
 
