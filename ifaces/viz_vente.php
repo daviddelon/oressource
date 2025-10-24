@@ -36,12 +36,15 @@ if (is_valid_session() && is_allowed_vente() && $_SESSION['viz_caisse']) {
   vendus.prix,
   vendus.id_createur,
   vendus.timestamp,
-  utilisateurs.mail
+  utilisateurs.mail,
+  pesees_vendus.masse
   FROM 
   vendus
   JOIN type_dechets ON type_dechets.id = vendus.id_type_dechet
   LEFT JOIN grille_objets ON grille_objets.id = vendus.id_objet
   JOIN utilisateurs ON utilisateurs.id = vendus.id_createur
+  LEFT JOIN pesees_vendus
+  ON pesees_vendus.id = vendus.id
 WHERE 
   vendus.id_vente = :id_vente
 ORDER BY 
@@ -71,6 +74,7 @@ ORDER BY
           <th>Type d'objet:</th>
           <th>Objet:</th>
           <th>Quantité</th>
+          <th>Masse</th>
           <th>Prix</th>
           <th>Lot</th>
           <th>Auteur de la ligne</th>
@@ -84,6 +88,7 @@ ORDER BY
             <td><?= $d['type']; ?></td>
             <td><?= $d['objet']; ?></td>
             <td><?= $d['quantite']; ?></td>
+            <td><?= $d['masse']; ?></td>
             <td><?= $d['prix']; ?></td>
             <td><?= $d['lot'] === 0 ? 'unité' : 'lot' ?></td>
             <td><?= $users[$d['id_createur']]['mail'] ?></td>

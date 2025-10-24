@@ -46,6 +46,7 @@ if (is_valid_session() && $_SESSION['viz_caisse'] && is_allowed_vente_id($numero
           <th>Crédit</th>
           <th>Débit</th>
           <th>Nombre d'objets</th>
+          <th>Masse pesée</th>
           <th>Moyen de paiement</th>
           <th>Commentaire</th>
           <th>Auteur de la ligne</th>
@@ -61,6 +62,7 @@ if (is_valid_session() && $_SESSION['viz_caisse'] && is_allowed_vente_id($numero
             <td><?= $vente['credit']; ?></td>
             <td><?= $vente['debit']; ?></td>
             <td><?= $vente['quantite']; ?></td>
+            <td><?= $vente['masse']; ?></td>
             <td><span class="badge" style="background-color: <?= $vente['coul']; ?>"><?= $vente['moyen']; ?></span></td>
             <td style="width:100px"><?= $vente['commentaire']; ?></td>
             <td><?= $vente['mail']; ?></td>
